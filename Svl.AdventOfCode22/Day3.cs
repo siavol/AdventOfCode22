@@ -21,8 +21,9 @@ public static class Day3
 
     internal static int GetItemPriority(char item) => item switch
     {
-        >= 'a' => item - 'a' + 1,
-        _ => item - 'A' + 27
+        >= 'a' and <= 'z' => item - 'a' + 1,
+        >= 'A' and <= 'Z' => item - 'A' + 27,
+        _ => throw new NotSupportedException()
     };
 
     internal static int GetRucksackPriority(string rucksack)
