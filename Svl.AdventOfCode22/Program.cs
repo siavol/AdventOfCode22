@@ -24,6 +24,14 @@ switch (taskName)
         Console.WriteLine($"Day 1 task part 2 solution: {max3Calories}");
         break;
     }
+    case "2":
+    {
+        Console.WriteLine("Solving Day 2 task.");
+        await using var stream = new FileStream("Day2Input.txt", FileMode.Open);
+        var scores = Day2.SolveTask(stream);
+        Console.WriteLine($"Day 2 task solution: {scores}");
+        break;
+    }
     default:
         throw new ApplicationException($"Unknown task {taskName}");
 }
