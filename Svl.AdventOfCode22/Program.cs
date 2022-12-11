@@ -25,10 +25,19 @@ switch (taskName)
         break;
     }
     case "2":
+    case "2p1":
     {
         Console.WriteLine("Solving Day 2 task.");
         await using var stream = new FileStream("Day2Input.txt", FileMode.Open);
-        var scores = Day2.SolveTask(stream);
+        var scores = Day2.SolveTaskPart1(stream);
+        Console.WriteLine($"Day 2 task solution: {scores}");
+        break;
+    }
+    case "2p2":
+    {
+        Console.WriteLine("Solving Day 2 part 2 task.");
+        await using var stream = new FileStream("Day2Input.txt", FileMode.Open);
+        var scores = Day2.SolveTaskPart2(stream);
         Console.WriteLine($"Day 2 task solution: {scores}");
         break;
     }
