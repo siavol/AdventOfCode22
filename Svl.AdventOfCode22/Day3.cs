@@ -65,8 +65,7 @@ public static class Day3
     {
         var set1 = new HashSet<char>(group[0]);
         var set2 = new HashSet<char>(group[1]);
-        var set3 = new HashSet<char>(group[2]);
-        return set1.First(item => set2.Contains(item) && set3.Contains(item));
+        return group[2].First(item => set1.Contains(item) && set2.Contains(item));
     }
 }
 
