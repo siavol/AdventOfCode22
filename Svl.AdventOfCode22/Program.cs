@@ -35,6 +35,11 @@ switch (taskName)
         RunTaskForTheDay(3, 1, Day3.SolveTaskPart1);
         break;
     }
+    case "3p2":
+    {
+        RunTaskForTheDay(3, 1, Day3.SolveTaskPart2);
+        break;
+    }
     default:
         throw new ApplicationException($"Unknown task {taskName}");
 }

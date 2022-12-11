@@ -41,6 +41,33 @@ public static class Day3
         var itemsMap = new HashSet<char>(compartment1);
         return compartment2.First(item => itemsMap.Contains(item));
     }
+
+    public static int SolveTaskPart2(Stream stream)
+    {
+        var acc = 0;
+        using var streamReader = new StreamReader(stream);
+        while (!streamReader.EndOfStream)
+        {
+            var line1 = streamReader.ReadLine();
+            var line2 = streamReader.ReadLine();
+            var line3 = streamReader.ReadLine();
+            var group = new[] { line1, line2, line3 };
+            var badge = GetGroupBadge(group);
+            var priority = GetItemPriority(badge);
+            acc += priority;
+        }
+
+        return acc;
+
+    }
+
+    public static char GetGroupBadge(string[] group)
+    {
+        var set1 = new HashSet<char>(group[0]);
+        var set2 = new HashSet<char>(group[1]);
+        var set3 = new HashSet<char>(group[2]);
+        return set1.First(item => set2.Contains(item) && set3.Contains(item));
+    }
 }
 
 public class Day3Tests
@@ -81,4 +108,34 @@ CrZsJsPPZsGzwwsLwLmpwMDw
         var result = Day3.SolveTaskPart1(stream);
         Assert.Equal(157, result);
     }
+
+    [Fact]
+    public void TestGetGroupBadge()
+    {
+        var group = new[]
+        {
+            "vJrwpWtwJgWrhcsFMMfFFhFp",
+            "jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL",
+            "PmmdzqPrVvPwwTWBwg"
+        };
+        var badge = Day3.GetGroupBadge(group);
+        Assert.Equal('r', badge);
+    }
+    
+    [Fact]
+    public void TestTaskPart2()
+    {
+        const string input = """
+vJrwpWtwJgWrhcsFMMfFFhFp
+jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL
+PmmdzqPrVvPwwTWBwg
+wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn
+ttgJtRGJQctTZtZT
+CrZsJsPPZsGzwwsLwLmpwMDw
+""";
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes(input));
+        var result = Day3.SolveTaskPart2(stream);
+        Assert.Equal(70, result);
+    }
+
 }
