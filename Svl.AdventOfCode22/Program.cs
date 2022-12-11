@@ -10,38 +10,39 @@ switch (taskName)
     case "1":
     case "1p1":
     {
-        Console.WriteLine("Solving Day 1 task, Part 1.");
-        await using var stream = new FileStream("Day1Input.txt", FileMode.Open);
-        var maxCalories = Day1.SolveTask(stream);
-        Console.WriteLine($"Day 1 task solution: {maxCalories}");
+        RunTaskForTheDay(1, 1, Day1.SolveTask);
         break;
     }
     case "1p2":
     {
-        Console.WriteLine("Solving Day 1 task, Part 2.");
-        await using var stream = new FileStream("Day1Input.txt", FileMode.Open);
-        var max3Calories = Day1.SolveSecondPartTask(stream);
-        Console.WriteLine($"Day 1 task part 2 solution: {max3Calories}");
+        RunTaskForTheDay(1, 2, Day1.SolveSecondPartTask);
         break;
     }
     case "2":
     case "2p1":
     {
-        Console.WriteLine("Solving Day 2 task.");
-        await using var stream = new FileStream("Day2Input.txt", FileMode.Open);
-        var scores = Day2.SolveTaskPart1(stream);
-        Console.WriteLine($"Day 2 task solution: {scores}");
+        RunTaskForTheDay(2, 1, Day2.SolveTaskPart1);
         break;
     }
     case "2p2":
     {
-        Console.WriteLine("Solving Day 2 part 2 task.");
-        await using var stream = new FileStream("Day2Input.txt", FileMode.Open);
-        var scores = Day2.SolveTaskPart2(stream);
-        Console.WriteLine($"Day 2 task solution: {scores}");
+        RunTaskForTheDay(2, 2, Day2.SolveTaskPart2);
+        break;
+    }
+    case "3":
+    case "3p1":
+    {
+        RunTaskForTheDay(3, 1, Day3.SolveTaskPart1);
         break;
     }
     default:
         throw new ApplicationException($"Unknown task {taskName}");
 }
 
+async Task RunTaskForTheDay(int day, int part, Func<Stream, int> task)
+{
+    Console.WriteLine($"Solving Day {day} task, Part {part}.");
+    await using var stream = new FileStream($"Day{day}Input.txt", FileMode.Open);
+    var result = task(stream);
+    Console.WriteLine($"Day {day} task part {part} solution: {result}");
+}
