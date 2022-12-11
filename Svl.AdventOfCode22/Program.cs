@@ -12,7 +12,7 @@ switch (taskName)
     {
         Console.WriteLine("Solving Day 1 task, Part 1.");
         await using var stream = new FileStream("Day_1_Input.txt", FileMode.Open);
-        var maxCalories = Day_1.SolveTask(stream);
+        var maxCalories = Day1.SolveTask(stream);
         Console.WriteLine($"Day 1 task solution: {maxCalories}");
         break;
     }
@@ -20,7 +20,7 @@ switch (taskName)
     {
         Console.WriteLine("Solving Day 1 task, Part 2.");
         await using var stream = new FileStream("Day_1_Input.txt", FileMode.Open);
-        var max3Calories = Day_1.SolveSecondPartTask(stream);
+        var max3Calories = Day1.SolveSecondPartTask(stream);
         Console.WriteLine($"Day 1 task part 2 solution: {max3Calories}");
         break;
     }

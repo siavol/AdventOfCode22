@@ -1,6 +1,6 @@
 namespace Svl.AdventOfCode22;
 
-public class Day_1
+public static class Day1
 {
     public static int SolveTask(Stream stream)
     {
@@ -51,7 +51,7 @@ public class Day_1
         return caloriesHeap.Dequeue() + caloriesHeap.Dequeue() + caloriesHeap.Dequeue();
     }
 
-    public class IntComparer : IComparer<int>
+    private class IntComparer : IComparer<int>
     {
         public int Compare(int x, int y)
         {

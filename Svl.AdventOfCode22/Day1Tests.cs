@@ -3,12 +3,12 @@ using Xunit;
 
 namespace Svl.AdventOfCode22;
 
-public class Day_1_Tests
+public class Day1Tests
 {
     [Fact]
     public void Test_Part1()
     {
-        var input = """
+        const string input = """
 1000
 2000
 3000
@@ -25,14 +25,14 @@ public class Day_1_Tests
 10000
 """;
         using var stream = new MemoryStream(Encoding.UTF8.GetBytes(input));
-        var result = Day_1.SolveTask(stream);
+        var result = Day1.SolveTask(stream);
         Assert.Equal(24000, result);
     }
 
     [Fact]
     public void Test_Part2()
     {
-        var input = """
+        const string input = """
 1000
 2000
 3000
@@ -49,7 +49,7 @@ public class Day_1_Tests
 10000
 """;
         using var stream = new MemoryStream(Encoding.UTF8.GetBytes(input));
-        var result = Day_1.SolveSecondPartTask(stream);
+        var result = Day1.SolveSecondPartTask(stream);
         Assert.Equal(24000 + 11000 + 10000, result);
     }
 }
