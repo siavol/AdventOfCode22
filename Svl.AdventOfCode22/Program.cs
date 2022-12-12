@@ -10,40 +10,45 @@ switch (taskName)
     case "1":
     case "1p1":
     {
-        RunTaskForTheDay(1, 1, Day1.SolveTask);
+        await RunTaskForTheDay(1, 1, Day1.SolveTask);
         break;
     }
     case "1p2":
     {
-        RunTaskForTheDay(1, 2, Day1.SolveSecondPartTask);
+        await RunTaskForTheDay(1, 2, Day1.SolveSecondPartTask);
         break;
     }
     case "2":
     case "2p1":
     {
-        RunTaskForTheDay(2, 1, Day2.SolveTaskPart1);
+        await RunTaskForTheDay(2, 1, Day2.SolveTaskPart1);
         break;
     }
     case "2p2":
     {
-        RunTaskForTheDay(2, 2, Day2.SolveTaskPart2);
+        await RunTaskForTheDay(2, 2, Day2.SolveTaskPart2);
         break;
     }
     case "3":
     case "3p1":
     {
-        RunTaskForTheDay(3, 1, Day3.SolveTaskPart1);
+        await RunTaskForTheDay(3, 1, Day3.SolveTaskPart1);
         break;
     }
     case "3p2":
     {
-        RunTaskForTheDay(3, 1, Day3.SolveTaskPart2);
+        await RunTaskForTheDay(3, 1, Day3.SolveTaskPart2);
         break;
     }
     case "4":
     case "4p1":
     {
-        RunTaskForTheDay(4, 1, Day4.SolveTaskPart1);
+        await RunTaskForTheDay(4, 1, Day4.SolveTaskPart1);
+        break;
+    }
+    case "4p2":
+    {
+        await RunTaskForTheDay(4, 1, Day4.SolveTaskPart2);
         break;
     }
     default:

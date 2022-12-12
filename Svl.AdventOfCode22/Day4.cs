@@ -22,6 +22,29 @@ public static class Day4
         return count;
     }
 
+    public static int SolveTaskPart2(Stream stream)
+    {
+        var count = 0;
+        using var streamReader = new StreamReader(stream);
+        while (!streamReader.EndOfStream)
+        {
+            var line = streamReader.ReadLine();
+            var pair = ParseAssignmentPairs(line ?? throw new InvalidOperationException());
+            if (IsOverlapped(pair))
+            {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    private static bool IsOverlapped(Tuple<Range,Range> pair)
+    {
+        return (pair.Item1.From >= pair.Item2.From && pair.Item1.From <= pair.Item2.To)
+               || (pair.Item1.From <= pair.Item2.From && pair.Item1.To >= pair.Item2.From);
+    }
+
     private static bool FullyContains(Tuple<Range,Range> pair)
     {
         return (pair.Item1.From >= pair.Item2.From && pair.Item1.To <= pair.Item2.To)
@@ -63,5 +86,21 @@ public class Day4Tests
         using var stream = new MemoryStream(Encoding.UTF8.GetBytes(input));
         var result = Day4.SolveTaskPart1(stream);
         Assert.Equal(2, result);
+    }
+    
+    [Fact]
+    public void TestSolveTaskPart2()
+    {
+        const string input = """
+2-4,6-8
+2-3,4-5
+5-7,7-9
+2-8,3-7
+6-6,4-6
+2-6,4-8
+""";
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes(input));
+        var result = Day4.SolveTaskPart2(stream);
+        Assert.Equal(4, result);
     }
 }
