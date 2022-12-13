@@ -8,23 +8,50 @@ public static partial class Day5
 {
     public static string SolveTaskPart1(Stream stream)
     {
-        using var streamReader = new StreamReader(stream);
-        var stacks = ParseStacks(streamReader);
-        
-        // skip empty line
-        streamReader.ReadLine();
-        
-        while (!streamReader.EndOfStream)
+        return SolveGeneralTask(stream, (itemsCount, fromStack, toStack) =>
         {
-            var line = streamReader.ReadLine();
-            var moveInstruction = ParseMoveExpression(line);
-            var fromStack = stacks[moveInstruction.From-1];
-            var toStack = stacks[moveInstruction.To-1];
-            for (var i = 0; i < moveInstruction.ItemsCount; i++)
+            for (var i = 0; i < itemsCount; i++)
             {
                 var item = fromStack.Pop();
                 toStack.Push(item);
             }
+        });
+    }
+
+    public static string SolveTaskPart2(Stream stream)
+    {
+        return SolveGeneralTask(stream, (itemsCount, fromStack, toStack) =>
+        {
+            var tmpStack = new Stack<char>();
+            for (var i = 0; i < itemsCount; i++)
+            {
+                var item = fromStack.Pop();
+                tmpStack.Push(item);
+            }
+
+            foreach (var item in tmpStack)
+            {
+                toStack.Push(item);
+            }
+        });
+    }
+
+    private static string SolveGeneralTask(Stream stream, Action<int, Stack<char>, Stack<char>> moveItems)
+    {
+        using var streamReader = new StreamReader(stream);
+        var stacks = ParseStacks(streamReader);
+
+        // skip empty line
+        streamReader.ReadLine();
+
+        while (!streamReader.EndOfStream)
+        {
+            var line = streamReader.ReadLine();
+            var moveInstruction = ParseMoveExpression(line);
+            var fromStack = stacks[moveInstruction.From - 1];
+            var toStack = stacks[moveInstruction.To - 1];
+            var itemsCount = moveInstruction.ItemsCount;
+            moveItems(itemsCount, fromStack, toStack);
         }
 
         var topItemsStr = String.Join("", stacks.Select(s => s.Pop()));
@@ -126,5 +153,24 @@ move 1 from 1 to 2
         using var stream = new MemoryStream(Encoding.UTF8.GetBytes(input));
         var result = Day5.SolveTaskPart1(stream);
         Assert.Equal("CMZ", result);
+    }
+    
+    [Fact]
+    public void TestSolveTaskPart2()
+    {
+        const string input = """
+    [D]    
+[N] [C]    
+[Z] [M] [P]
+ 1   2   3 
+
+move 1 from 2 to 1
+move 3 from 1 to 3
+move 2 from 2 to 1
+move 1 from 1 to 2
+""";
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes(input));
+        var result = Day5.SolveTaskPart2(stream);
+        Assert.Equal("MCD", result);
     }
 }
