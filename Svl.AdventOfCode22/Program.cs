@@ -79,6 +79,11 @@ switch (taskName)
         await RunTaskForTheDay(7, 1, Wrap(Day7.SolveTaskPart1));
         break;
     }
+    case "7p2":
+    {
+        await RunTaskForTheDay(7, 2, Wrap(Day7.SolveTaskPart2));
+        break;
+    }
     default:
         throw new ApplicationException($"Unknown task {taskName}");
 }

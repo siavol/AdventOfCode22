@@ -9,13 +9,35 @@ public partial class Day7
     public static int SolveTaskPart1(Stream stream)
     {
         var fileSystem = FileSystemBuilder.FromStream(stream);
-
         var result = fileSystem.Root.Flatten()
             .OfType<Directory>()
             .Where(d => d.Size <= 100000)
             .Sum(d => d.Size);
-
         return result;
+    }
+
+    public static int SolveTaskPart2(Stream stream)
+    {
+        const int totalSpace = 70000000;
+        const int needUnusedSpace = 30000000;
+        
+        var fileSystem = FileSystemBuilder.FromStream(stream);
+        var unusedSpace = totalSpace - fileSystem.Root.Size;
+
+        if (unusedSpace < needUnusedSpace)
+        {
+            var requredSpace = needUnusedSpace - unusedSpace;
+            var dirToDelete = fileSystem.Root.Flatten()
+                .OfType<Directory>()
+                .Where(d => d.Size >= requredSpace)
+                .OrderBy(d => d.Size)
+                .First();
+            return dirToDelete.Size;
+        }
+        else
+        {
+            return 0;
+        }
     }
 
     public partial class FileSystemBuilder
@@ -334,7 +356,7 @@ $ ls
     [Fact]
     public void Test_Part1()
     {
-                const string input = """
+        const string input = """
 $ cd /
 $ ls
 dir a
@@ -362,5 +384,38 @@ $ ls
         using var stream = new MemoryStream(Encoding.UTF8.GetBytes(input));
         var result = Day7.SolveTaskPart1(stream);
         Assert.Equal(95437, result);
+    }
+
+    [Fact]
+    public void Test_Part2()
+    {
+        const string input = """
+$ cd /
+$ ls
+dir a
+14848514 b.txt
+8504156 c.dat
+dir d
+$ cd a
+$ ls
+dir e
+29116 f
+2557 g
+62596 h.lst
+$ cd e
+$ ls
+584 i
+$ cd ..
+$ cd ..
+$ cd d
+$ ls
+4060174 j
+8033020 d.log
+5626152 d.ext
+7214296 k
+""";
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes(input));
+        var result = Day7.SolveTaskPart2(stream);
+        Assert.Equal(24933642, result);
     }
 }
