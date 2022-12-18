@@ -84,6 +84,12 @@ switch (taskName)
         await RunTaskForTheDay(7, 2, Wrap(Day7.SolveTaskPart2));
         break;
     }
+    case "8":
+    case "8p1":
+    {
+        await RunTaskForTheDay(8, 1, Wrap(Day8.GetVisibleTreeCount));
+        break;
+    }
     default:
         throw new ApplicationException($"Unknown task {taskName}");
 }
