@@ -90,6 +90,11 @@ switch (taskName)
         await RunTaskForTheDay(8, 1, Wrap(Day8.GetVisibleTreeCount));
         break;
     }
+    case "8p2":
+    {
+        await RunTaskForTheDay(8, 2, Wrap(Day8.GetMaxScenicScore));
+        break;
+    }
     default:
         throw new ApplicationException($"Unknown task {taskName}");
 }

@@ -18,6 +18,19 @@ public class Day8
         return forest.GetVisibleTrees().Count();
     }
 
+    public static int GetMaxScenicScore(Stream stream)
+    {
+        using var streamReader = new StreamReader(stream, Encoding.UTF8);
+        var forest = new Forest();
+        while (!streamReader.EndOfStream)
+        {
+            var line = streamReader.ReadLine();
+            forest.AddRow(line);
+        }
+
+        return forest.GetMaxScenicScore();
+    }
+
     public class Tree
     {
         private readonly Dictionary<Direction, int> _highestTrees = new();
@@ -133,16 +146,7 @@ public class Day8
                 return highestTreeInDirection.Value;
             }
 
-            var nextCoord = direction switch
-            {
-                Direction.Up => Tuple.Create(row - 1, col),
-                Direction.Down => Tuple.Create(row + 1, col),
-                Direction.Left => Tuple.Create(row, col - 1),
-                Direction.Right => Tuple.Create(row, col + 1),
-                _ => throw new ArgumentOutOfRangeException(nameof(direction), direction, null)
-            };
-            var nextTreeRow = nextCoord.Item1;
-            var nextTreeCol = nextCoord.Item2;
+            var (nextTreeRow, nextTreeCol) = GetNextCoord(row, col, direction);
             if (nextTreeRow >= 0 && nextTreeRow < _grid.Count
                                  && nextTreeCol >= 0 && nextTreeCol < _grid[0].Length)
             {
@@ -160,6 +164,63 @@ public class Day8
             }
         }
 
+        private static (int, int) GetNextCoord(int row, int col, Direction direction)
+        {
+            return direction switch
+            {
+                Direction.Up => (row - 1, col),
+                Direction.Down => (row + 1, col),
+                Direction.Left => (row, col - 1),
+                Direction.Right => (row, col + 1),
+                _ => throw new ArgumentOutOfRangeException(nameof(direction), direction, null)
+            };
+        }
+
+        public int GetScenicScore(int row, int col)
+        {
+            var tree = _grid[row][col];
+            var directions = Enum.GetValues<Direction>();
+            return directions
+                .Select(d => GetScenicScoreInDirection(row, col, d, tree.Height, 0))
+                .Aggregate(1, (acc, i) => acc * i);
+        }
+
+        private int GetScenicScoreInDirection(int row, int col, Direction direction, int treeHeight, int baseScore)
+        {
+            var (nextTreeRow, nextTreeCol) = GetNextCoord(row, col, direction);
+            if (nextTreeRow >= 0 && nextTreeRow < _grid.Count
+                                 && nextTreeCol >= 0 && nextTreeCol < _grid[0].Length)
+            {
+                var nextTree = _grid[nextTreeRow][nextTreeCol];
+                if (nextTree.Height < treeHeight)
+                {
+                    return GetScenicScoreInDirection(nextTreeRow, nextTreeCol, direction, treeHeight, baseScore + 1);
+                }
+                else
+                {
+                    return baseScore + 1;
+                }
+            }
+            else
+            {
+                return baseScore;
+            }
+        }
+
+        public int GetMaxScenicScore()
+        {
+            var maxScore = -1;
+            for (int row = 0; row < _grid.Count; row++)
+            {
+                for (int col = 0; col < _grid[0].Length; col++)
+                {
+                    var scenicScore = GetScenicScore(row, col);
+                    maxScore = Math.Max(scenicScore, maxScore);
+                }
+            }
+
+            return maxScore;
+        }
     }
 }
 
@@ -200,5 +261,35 @@ public class Day8Tests
         forest.AddRow("35390");
         
         Assert.Equal(expectedResult, forest.GetTreeVisibility(row, col));
+    }
+
+    [Theory]
+    [InlineData(1, 2, 4)]
+    [InlineData(3, 2, 8)]
+    public void TestGetScenicScore(int row, int col, int expectedScore)
+    {
+        var forest = new Day8.Forest();
+        forest.AddRow("30373");
+        forest.AddRow("25512");
+        forest.AddRow("65332");
+        forest.AddRow("33549");
+        forest.AddRow("35390");
+        
+        Assert.Equal(expectedScore, forest.GetScenicScore(row, col));
+    }
+    
+    [Fact]
+    public void TestSolveTask2()
+    {
+        const string input = """
+30373
+25512
+65332
+33549
+35390
+""";
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes(input));
+        var result = Day8.GetMaxScenicScore(stream);
+        Assert.Equal(8, result);
     }
 }
