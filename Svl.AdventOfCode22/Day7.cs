@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Text;
 using System.Text.RegularExpressions;
 using Xunit;
@@ -42,12 +43,12 @@ public partial class Day7
 
     public partial class FileSystemBuilder
     {
-        private FileSystem fileSystem { get; } = new();
+        private FileSystem FileSystem { get; } = new();
 
         public static FileSystem FromStream(Stream stream)
         {
             var fileSystemBuilder = new FileSystemBuilder(stream);
-            return fileSystemBuilder.fileSystem;
+            return fileSystemBuilder.FileSystem;
         }
 
         private FileSystemBuilder(Stream stream)
@@ -56,11 +57,11 @@ public partial class Day7
             var nextCommand = streamReader.ReadLine();
             do
             {
-                nextCommand = ProcessCommand(nextCommand, streamReader);
+                nextCommand = ProcessCommand(nextCommand!, streamReader);
             } while (nextCommand != null);
         }
 
-        private string ProcessCommand(string command, StreamReader streamReader)
+        private string? ProcessCommand(string command, StreamReader streamReader)
         {
             if (!IsCommandString(command))
             {
@@ -71,7 +72,7 @@ public partial class Day7
             if (cdMatch.Success)
             {
                 var path = cdMatch.Groups["path"];
-                fileSystem.ChangeCurrentDirectory(path.Value);
+                FileSystem.ChangeCurrentDirectory(path.Value);
                 return streamReader.EndOfStream ? null : streamReader.ReadLine();
             }
             else
@@ -80,7 +81,7 @@ public partial class Day7
                 if (lsMatch.Success)
                 {
                     var items = new List<IFileSystemItem>();
-                    string line;
+                    string? line;
                     while (true)
                     {
                         line = streamReader.EndOfStream ? null : streamReader.ReadLine();
@@ -91,7 +92,7 @@ public partial class Day7
                         items.Add(ParseFileSystemItem(line));
                     }
 
-                    fileSystem.CurrentFolder.RegisterContent(items);
+                    FileSystem.CurrentFolder.RegisterContent(items);
                     return line;
                 }
             }
@@ -109,7 +110,7 @@ public partial class Day7
             var dirMatch = DirectoryItemRegex().Match(line);
             if (dirMatch.Success)
             {
-                return new Directory(dirMatch.Groups["name"].Value, fileSystem.CurrentFolder);
+                return new Directory(dirMatch.Groups["name"].Value, FileSystem.CurrentFolder);
             }
 
             var fileMatch = FileItemRegex().Match(line);
@@ -138,8 +139,8 @@ public partial class Day7
 
     public class FileSystem
     {
-        public Directory? Root { get; }
-        public Directory? CurrentFolder { get; private set; }
+        public Directory Root { get; }
+        public Directory CurrentFolder { get; private set; }
 
         public FileSystem()
         {
@@ -155,6 +156,7 @@ public partial class Day7
             }
             else if (path == "..")
             {
+                Debug.Assert(CurrentFolder.Parent != null, "CurrentFolder.Parent != null");
                 CurrentFolder = CurrentFolder.Parent;
             }
             else
@@ -174,7 +176,7 @@ public partial class Day7
     public class Directory: IFileSystemItem
     {
         private readonly Directory? _parent;
-        private IFileSystemItem[] _items;
+        private IFileSystemItem[]? _items;
         private int _size = -1;
         
         public string Name { get; }
@@ -209,7 +211,7 @@ public partial class Day7
             }
         }
 
-        public IReadOnlyList<IFileSystemItem> Items => _items.AsReadOnly();
+        public IReadOnlyList<IFileSystemItem> Items => (_items ?? throw new InvalidOperationException()).AsReadOnly();
 
         public Directory(string name, Directory? parent)
         {
@@ -346,7 +348,7 @@ $ ls
                                 { Name: "k", Size: 7214296 }
                             ]
                         }
-                    ] rooItems
+                    ]
                 }
             } => true,
             _ => throw new ApplicationException($"File system does not match {fs}")

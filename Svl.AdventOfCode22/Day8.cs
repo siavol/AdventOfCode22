@@ -1,9 +1,10 @@
+using System.Diagnostics;
 using System.Text;
 using Xunit;
 
 namespace Svl.AdventOfCode22;
 
-public class Day8
+public static class Day8
 {
     public static int GetVisibleTreeCount(Stream stream)
     {
@@ -12,6 +13,7 @@ public class Day8
         while (!streamReader.EndOfStream)
         {
             var line = streamReader.ReadLine();
+            Debug.Assert(line != null, nameof(line) + " != null");
             forest.AddRow(line);
         }
         
@@ -25,6 +27,7 @@ public class Day8
         while (!streamReader.EndOfStream)
         {
             var line = streamReader.ReadLine();
+            Debug.Assert(line != null, nameof(line) + " != null");
             forest.AddRow(line);
         }
 
@@ -84,7 +87,7 @@ public class Day8
     {
         private readonly List<Tree[]> _grid = new();
 
-        public void AddRow(Tree[] row)
+        private void AddRow(Tree[] row)
         {
             if (row == null) throw new ArgumentNullException(nameof(row));
             if (_grid.Count > 0 && _grid[0].Length != row.Length)
