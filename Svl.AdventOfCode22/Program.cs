@@ -106,6 +106,12 @@ switch (taskName)
         await RunTaskForTheDay(9, 2, Wrap(Day9.FindLongRopeTailPositionsCount));
         break;
     }
+    case "10":
+    case "10p1":
+    {
+        await RunTaskForTheDay(10, 1, Wrap(Day10.GetSignalStrengthSum));
+        break;
+    }
     default:
         throw new ApplicationException($"Unknown task {taskName}");
 }
