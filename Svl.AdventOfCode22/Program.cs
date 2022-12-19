@@ -112,16 +112,28 @@ switch (taskName)
         await RunTaskForTheDay(10, 1, Wrap(Day10.GetSignalStrengthSum));
         break;
     }
+    case "10p2":
+    {
+        await RunTaskForTheDay(10, 2, Day10.GetCrtScreen, true);
+        break;
+    }
     default:
         throw new ApplicationException($"Unknown task {taskName}");
 }
 
-async Task RunTaskForTheDay(int day, int part, Func<Stream, string> task)
+async Task RunTaskForTheDay(int day, int part, Func<Stream, string> task, bool outputFromNewLine = false)
 {
     Console.WriteLine($"Solving Day {day} task, Part {part}.");
     await using var stream = new FileStream($"Day{day}Input.txt", FileMode.Open);
     var result = task(stream);
-    Console.WriteLine($"Day {day} task part {part} solution: {result}");
+    if (outputFromNewLine)
+    {
+        Console.WriteLine(result);
+    }
+    else
+    {
+        Console.WriteLine($"Day {day} task part {part} solution: {result}");
+    }
 }
 
 Func<Stream, string> Wrap(Func<Stream, int> task) => stream => task(stream).ToString();

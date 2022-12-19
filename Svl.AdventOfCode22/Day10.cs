@@ -54,6 +54,23 @@ public class Day10
                     throw new ApplicationException();
             }
         }
+
+        public string GetCrtLine(int lineNumber)
+        {
+            const int pixelsInLine = 40;
+
+            var lineBuilder = new StringBuilder(pixelsInLine);
+            for (var pixel = 0; pixel < pixelsInLine; pixel++)
+            {
+                var cycle = (lineNumber * pixelsInLine) + pixel + 1;
+                var pixelDrawing = GetRegisterDuringTheCycle(cycle);
+                lineBuilder.Append(Math.Abs(pixel - pixelDrawing) <= 1
+                    ? "#"
+                    : ".");
+            }
+
+            return lineBuilder.ToString();
+        }
     }
 
     public static Machine ExecuteMachine(Stream stream)
@@ -78,6 +95,18 @@ public class Day10
         return signalCycles
             .Select(cycle => machine.GetRegisterDuringTheCycle(cycle) * cycle)
             .Sum();
+    }
+
+    public static string GetCrtScreen(Stream stream)
+    {
+        const int lineCount = 6;
+        var machine = ExecuteMachine(stream);
+        var screen = new StringBuilder();
+        for (var line = 0; line < lineCount; line++)
+        {
+            screen.AppendLine(machine.GetCrtLine(line));
+        }
+        return screen.ToString();
     }
 }
 
@@ -303,8 +332,38 @@ noop
     public void TestGetSignalStrengthSum()
     {
         using var stream = new MemoryStream(Encoding.UTF8.GetBytes(TestInput));
-        int result = Day10.GetSignalStrengthSum(stream);
+        var result = Day10.GetSignalStrengthSum(stream);
         
         Assert.Equal(13140, result);
+    }
+    
+    [Fact]
+    public void TestGetCrtLine()
+    {
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes(TestInput));
+        var machine = Day10.ExecuteMachine(stream);
+
+        Assert.Equal("##..##..##..##..##..##..##..##..##..##..", machine.GetCrtLine(0));
+        Assert.Equal("###...###...###...###...###...###...###.", machine.GetCrtLine(1));
+        Assert.Equal("####....####....####....####....####....", machine.GetCrtLine(2));
+        Assert.Equal("#####.....#####.....#####.....#####.....", machine.GetCrtLine(3));
+        Assert.Equal("######......######......######......####", machine.GetCrtLine(4));
+        Assert.Equal("#######.......#######.......#######.....", machine.GetCrtLine(5));
+    }
+
+    [Fact]
+    public void TestGetCrtScreen()
+    {
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes(TestInput));
+        var crtScreen = Day10.GetCrtScreen(stream);
+        Assert.Equal("""
+##..##..##..##..##..##..##..##..##..##..
+###...###...###...###...###...###...###.
+####....####....####....####....####....
+#####.....#####.....#####.....#####.....
+######......######......######......####
+#######.......#######.......#######.....
+
+""", crtScreen);
     }
 }
