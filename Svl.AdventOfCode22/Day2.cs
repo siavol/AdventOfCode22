@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Text;
 using Xunit;
 
@@ -22,7 +23,7 @@ public static class Day2
         Won = 6
     }
 
-    private static readonly Dictionary<char, HandShape> handShapeMap = new()
+    private static readonly Dictionary<char, HandShape> HandShapeMap = new()
     {
         { 'A', HandShape.Rock },
         { 'B', HandShape.Paper },
@@ -32,7 +33,7 @@ public static class Day2
         { 'Z', HandShape.Scissors }
     };
 
-    private static readonly Dictionary<char, RoundResult> resultMap = new()
+    private static readonly Dictionary<char, RoundResult> ResultMap = new()
     {
         { 'X', RoundResult.Lost },
         { 'Y', RoundResult.Draw },
@@ -41,7 +42,7 @@ public static class Day2
 
     private class Accumulator
     {
-        public int Score { get; private set; } = 0;
+        public int Score { get; private set; }
 
         public void CountRound(HandShape opponent, HandShape your)
         {
@@ -98,8 +99,9 @@ public static class Day2
         while (!reader.EndOfStream)
         {
             var line = reader.ReadLine();
-            var opponent = handShapeMap[line[OpponentIndex]];
-            var your = handShapeMap[line[YourIndex]];
+            Debug.Assert(line != null, nameof(line) + " != null");
+            var opponent = HandShapeMap[line[OpponentIndex]];
+            var your = HandShapeMap[line[YourIndex]];
             accumulator.CountRound(opponent, your);
         }
 
@@ -114,8 +116,9 @@ public static class Day2
         while (!reader.EndOfStream)
         {
             var line = reader.ReadLine();
-            var opponent = handShapeMap[line[OpponentIndex]];
-            var result = resultMap[line[YourIndex]];
+            Debug.Assert(line != null, nameof(line) + " != null");
+            var opponent = HandShapeMap[line[OpponentIndex]];
+            var result = ResultMap[line[YourIndex]];
             accumulator.CountRound(opponent, result);
         }
 

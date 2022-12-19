@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Text;
 using System.Text.RegularExpressions;
 using Xunit;
@@ -47,6 +48,7 @@ public static partial class Day5
         while (!streamReader.EndOfStream)
         {
             var line = streamReader.ReadLine();
+            Debug.Assert(line != null, nameof(line) + " != null");
             var moveInstruction = ParseMoveExpression(line);
             var fromStack = stacks[moveInstruction.From - 1];
             var toStack = stacks[moveInstruction.To - 1];
@@ -84,6 +86,7 @@ public static partial class Day5
         while (true)
         {
             var line = streamReader.ReadLine();
+            Debug.Assert(line != null, nameof(line) + " != null");
 
             var startIndex = 0;
             int index;

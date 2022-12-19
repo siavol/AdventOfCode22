@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Text;
 using Xunit;
 
@@ -12,6 +13,7 @@ public static class Day3
         while (!streamReader.EndOfStream)
         {
             var line = streamReader.ReadLine();
+            Debug.Assert(line != null, nameof(line) + " != null");
             var priority = GetRucksackPriority(line);
             acc += priority;
         }
@@ -51,6 +53,9 @@ public static class Day3
             var line1 = streamReader.ReadLine();
             var line2 = streamReader.ReadLine();
             var line3 = streamReader.ReadLine();
+            Debug.Assert(line1 != null, nameof(line1) + " != null");
+            Debug.Assert(line2 != null, nameof(line2) + " != null");
+            Debug.Assert(line3 != null, nameof(line3) + " != null");
             var group = new[] { line1, line2, line3 };
             var badge = GetGroupBadge(group);
             var priority = GetItemPriority(badge);
