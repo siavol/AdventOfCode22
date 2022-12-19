@@ -95,6 +95,12 @@ switch (taskName)
         await RunTaskForTheDay(8, 2, Wrap(Day8.GetMaxScenicScore));
         break;
     }
+    case "9":
+    case "9p1":
+    {
+        await RunTaskForTheDay(9, 1, Wrap(Day9.FindTailPositionsCount));
+        break;
+    }
     default:
         throw new ApplicationException($"Unknown task {taskName}");
 }
