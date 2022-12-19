@@ -15,8 +15,24 @@ public static class Day9
 
     public class Rope
     {
-        public Coordinate Head { get; private set; } = new(0, 0);
-        public Coordinate Tail { get; private set; } = new(0, 0);
+        private readonly Coordinate[] _knots;
+
+        public Coordinate Head
+        {
+            get => _knots[0];
+            private set => _knots[0] = value;
+        }
+
+        public Coordinate Tail => _knots[^1];
+
+        public Rope(int length = 2)
+        {
+            _knots = new Coordinate[length];
+            for (var i = 0; i < length; i++)
+            {
+                _knots[i] = new Coordinate(0, 0);
+            }
+        }
 
         public void MoveHeadTo(Direction direction)
         {
@@ -37,22 +53,33 @@ public static class Day9
                 default:
                     throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
             }
-            
-            // Move tail
-            var dx = Head.X - Tail.X;
-            var dy = Head.Y - Tail.Y;
-            if (Math.Abs(dx) > 1 || Math.Abs(dy) > 1)
+
+            // Move next knots
+            for (var i = 1; i < _knots.Length; i++)
             {
-                var x = dx != 0 ? Tail.X + dx / Math.Abs(dx) : Tail.X;
-                var y = dy != 0 ? Tail.Y + dy / Math.Abs(dy) : Tail.Y;
-                Tail = new Coordinate(x, y);
+                var firstKnot = _knots[i - 1];
+                var nextKnot = _knots[i];
+                
+                var dx = firstKnot.X - nextKnot.X;
+                var dy = firstKnot.Y - nextKnot.Y;
+                if (Math.Abs(dx) > 1 || Math.Abs(dy) > 1)
+                {
+                    var x = dx != 0 ? nextKnot.X + dx / Math.Abs(dx) : nextKnot.X;
+                    var y = dy != 0 ? nextKnot.Y + dy / Math.Abs(dy) : nextKnot.Y;
+                    _knots[i] = new Coordinate(x, y);
+                }
             }
         }
     }
 
     public static int FindTailPositionsCount(Stream stream)
     {
-        var rope = new Rope();
+        return FindTailPositionsCount(stream, 2);
+    }
+
+    private static int FindTailPositionsCount(Stream stream, int ropeLength)
+    {
+        var rope = new Rope(ropeLength);
         var tailPositions = new HashSet<Coordinate>();
         using var streamReader = new StreamReader(stream);
         while (!streamReader.EndOfStream)
@@ -68,6 +95,11 @@ public static class Day9
         }
 
         return tailPositions.Count;
+    }
+
+    public static int FindLongRopeTailPositionsCount(Stream stream)
+    {
+        return FindTailPositionsCount(stream, 10);
     }
 
     private static (Direction, int) ParseMoveInstruction(string line)
@@ -143,5 +175,33 @@ R 2
         using var stream = new MemoryStream(Encoding.UTF8.GetBytes(input));
         var result = Day9.FindTailPositionsCount(stream);
         Assert.Equal(13, result);
+    }
+    
+    [Theory]
+    [InlineData("""
+R 4
+U 4
+L 3
+D 1
+R 4
+D 1
+L 5
+R 2
+""", 1)]
+    [InlineData("""
+R 5
+U 8
+L 8
+D 3
+R 17
+D 10
+L 25
+U 20
+""", 36)]
+    public void TestFindLongRopeTailPositions(string input, int expectedResult)
+    {
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes(input));
+        var result = Day9.FindLongRopeTailPositionsCount(stream);
+        Assert.Equal(expectedResult, result);
     }
 }
