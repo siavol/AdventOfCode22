@@ -117,6 +117,12 @@ switch (taskName)
         await RunTaskForTheDay(10, 2, Day10.GetCrtScreen, true);
         break;
     }
+    case "11":
+    case "11p1":
+    {
+        await RunTaskForTheDay(11, 1, Wrap(Day11.GetLevelOfMonkeyBusiness));
+        break;
+    }
     default:
         throw new ApplicationException($"Unknown task {taskName}");
 }
